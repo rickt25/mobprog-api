@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,5 +30,16 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::get('/wallets', [WalletController::class, 'index']);
+    Route::post('/wallets', [WalletController::class, 'store']);
+    Route::put('/wallets/{id}', [WalletController::class, 'update']);
+    Route::delete('/wallets/{id}', [WalletController::class, 'destroy']);
+
+    Route::get('/activities', [ActivityController::class, 'index']);
+    Route::post('/activities', [ActivityController::class, 'store']);
+    Route::put('/activities/{id}', [ActivityController::class, 'update']);
+    Route::delete('/activities/{id}', [ActivityController::class, 'destroy']);
+
+    Route::get('/overview', [HomeController::class, 'overview']);
+    Route::get('/today-activity', [HomeController::class, 'todayActivity']);
 });
 
