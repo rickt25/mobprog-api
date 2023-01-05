@@ -21,6 +21,7 @@ class AuthController extends Controller
 
             if($validateUser->fails()){
                 // if validation fails due to email format
+                // test
                 return response()->json([
                     'status' => false,
                     'message' => 'Email is invalid',
