@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
 use Illuminate\Http\Request;
@@ -42,5 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/overview', [HomeController::class, 'overview']);
     Route::get('/today-activity', [HomeController::class, 'todayActivity']);
+
+    Route::get('/categories', [CategoryController::class, 'getAll']);
 });
 
