@@ -11,4 +11,22 @@ class CategoryController extends Controller
         $categories = Category::all();
         return $categories;
     }
+
+    public function addCategory(Request $request){
+        $validateCategory = $request->validate([
+            'category_name' => 'required',
+        ]);
+
+        $category = Category::create([
+            'name' => $validateCategory['category_name'],
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $category,
+            'message' => 'Success Add Category.'
+        ]);
+    }
+
+
 }

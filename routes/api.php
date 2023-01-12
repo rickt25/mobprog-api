@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,5 +46,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/today-activity', [HomeController::class, 'todayActivity']);
 
     Route::get('/categories', [CategoryController::class, 'getAll']);
+    Route::post('/categories', [CategoryController::class, 'addCategory']);
 });
 
