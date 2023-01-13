@@ -14,6 +14,17 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
+        $categories = [
+            'General',
+            'Food & Drinks',
+            'Gift',
+            'Bills',
+            'Transportation',
+            'Shopping',
+            'Sports',
+            'Salary',
+            'Other',
+        ];
         Category::create([
             'name' => 'Food & Drinks',
         ]);

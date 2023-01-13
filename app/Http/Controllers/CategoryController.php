@@ -9,7 +9,10 @@ class CategoryController extends Controller
 {
     public function getAll(){
         $categories = Category::all();
-        return $categories;
+        return response()->json([
+            'status' => 'success',
+            'data' => $categories
+        ]);
     }
 
     public function addCategory(Request $request){
