@@ -15,10 +15,12 @@ class CreateActivitiesTable extends Migration
     {
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users');
             $table->foreignId('wallet_id')->constrained('wallets');
+            $table->foreignId('category_id')->constrained('categories');
+            $table->string('activity_name');
             $table->string('activity_type'); // "income" or "expense"
             $table->dateTime('activity_date'); // tanggal transaksi
-            $table->string('category_name');
             $table->string('description');
             $table->bigInteger('amount');
             $table->timestamps();

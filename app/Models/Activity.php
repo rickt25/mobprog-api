@@ -9,7 +9,22 @@ class Activity extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
+    protected $dates = ['activity_date'];
+
+    public function getCategoryNameAttribute(){
+        return $this->category->name;
+    }
+
     public function category(){
         return $this->belongsTo(Category::class);
     }
+
+    // public function toArray()
+    // {
+    //     $array = parent::toArray();
+    //     $array['category_name'] = $this->category_name;
+    //     return $array;
+    // }
 }

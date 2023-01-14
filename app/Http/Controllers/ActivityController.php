@@ -2,15 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Activity;
 use App\Models\Wallet;
+use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class ActivityController extends Controller
 {
     public function index(){
-        $activities = Auth::user()->activities;
+        $user = Auth::user();
+        // $activities = Auth::user()->activities->load('category')
+        // use category_name
+
+        $activities = Activity::query()
+                                ->where('user_id', $user->id)
+                                ->orderBy('activity_date', 'DESC')
+                                ->get()
+                                ->groupBy(function($activity){
+                                    return $activity->activity_date->format('Y-m-d');
+                                })
+                                ->map(function($activityGroup) {
+                                    return [
+                                        'date' => $activityGroup->first()->activity_date->format('d M Y'),
+                                        'total' => $activityGroup->sum('amount'),
+                                        'activities' => $activityGroup,
+                                    ];
+                                })
+                                ->values();
 
         return response()->json([
             'status' => 'success',
@@ -20,11 +39,12 @@ class ActivityController extends Controller
 
     public function store(Request $request){
         $validateActivity = $request->validate([
+            'category_id' => 'required',
             'activity_name' => 'required',
             'activity_type' => 'required',
             'activity_date' => 'required',
-            'category_name' => 'required',
             'amount' => 'required',
+            'description' => 'required',
             'wallet_id' => 'required'
         ]);
 
@@ -44,11 +64,12 @@ class ActivityController extends Controller
         $wallet->save();
 
         $activity = Activity::create([
+            'category_id' => $validateActivity['category_id'],
             'activity_name' => $validateActivity['activity_name'],
             'activity_type' => $validateActivity['activity_type'],
             'activity_date' => $validateActivity['activity_date'],
-            'category_name' => $validateActivity['category_name'],
             'amount' => $validateActivity['amount'],
+            'description' => $validateActivity['description'],
             'wallet_id' => $validateActivity['wallet_id'],
             'user_id' => Auth::user()->id
         ]);
@@ -62,10 +83,10 @@ class ActivityController extends Controller
 
     public function update(Request $request, $id){
         $validateActivity = $request->validate([
+            'category_id' => 'required',
             'activity_name' => 'required',
             'activity_type' => 'required',
             'activity_date' => 'required',
-            'category_name' => 'required',
             'amount' => 'required',
             'wallet_id' => 'required'
         ]);
@@ -103,6 +124,14 @@ class ActivityController extends Controller
 
     public function destroy($id){
         $activity = Activity::find($id);
+        $wallet = Wallet::find($activity->wallet_id);
+
+        if($activity->activity_type == 'income'){
+            $wallet->balance -= $activity->amount;
+        } else {
+            $wallet->balance += $activity->amount;
+        }
+
         $activity->delete();
 
         return response()->json([

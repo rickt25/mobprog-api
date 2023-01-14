@@ -25,16 +25,12 @@ class CategorySeeder extends Seeder
             'Salary',
             'Other',
         ];
-        Category::create([
-            'name' => 'Food & Drinks',
-        ]);
 
-        Category::create([
-            'name' => 'Gift',
-        ]);
-
-        Category::create([
-            'name' => 'Salary',
-        ]);
+        // foreach categories
+        foreach($categories as $category){
+            Category::create([
+                'name' => $category
+            ]);
+        }
     }
 }
