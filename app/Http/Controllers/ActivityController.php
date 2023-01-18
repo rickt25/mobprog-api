@@ -42,7 +42,7 @@ class ActivityController extends Controller
             'category_id' => 'required',
             'activity_name' => 'required',
             'activity_type' => 'required',
-            'activity_date' => 'required',
+            'activity_date' => 'nullable',
             'amount' => 'required',
             'description' => 'required',
             'wallet_id' => 'required'
@@ -62,6 +62,10 @@ class ActivityController extends Controller
             $wallet->balance += $validateActivity['amount'];
         }
         $wallet->save();
+
+        if(!$request->activity_date){
+            $validateActivity['activity_date'] = date('Y-m-d');
+        }
 
         $activity = Activity::create([
             'category_id' => $validateActivity['category_id'],
