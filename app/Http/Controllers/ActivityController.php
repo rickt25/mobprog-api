@@ -40,17 +40,19 @@ class ActivityController extends Controller
     public function store(Request $request){
         $validateActivity = $request->validate([
             'category_id' => 'required',
-            'activity_name' => 'required',
+            // 'activity_name' => 'required',
+            // 'description' => 'required',
             'activity_type' => 'required',
             'activity_date' => 'nullable',
             'amount' => 'required',
-            'description' => 'required',
             'wallet_id' => 'required'
         ]);
 
+        $validateActivity['activity_type'] = $validateActivity['activity_type'] == 0 ? 'expense' : 'income';
+
         $wallet = Wallet::find($validateActivity['wallet_id']);
 
-        if($request->activity_type == 'expense'){
+        if($validateActivity['activity_type'] == 'expense'){
             if($wallet->balance < $validateActivity['amount']){
                 return response()->json([
                     'status' => 'error',
@@ -69,11 +71,11 @@ class ActivityController extends Controller
 
         $activity = Activity::create([
             'category_id' => $validateActivity['category_id'],
-            'activity_name' => $validateActivity['activity_name'],
+            // 'activity_name' => $validateActivity['activity_name'],
+            // 'description' => $validateActivity['description'],
             'activity_type' => $validateActivity['activity_type'],
             'activity_date' => $validateActivity['activity_date'],
             'amount' => $validateActivity['amount'],
-            'description' => $validateActivity['description'],
             'wallet_id' => $validateActivity['wallet_id'],
             'user_id' => Auth::user()->id
         ]);
@@ -88,12 +90,14 @@ class ActivityController extends Controller
     public function update(Request $request, $id){
         $validateActivity = $request->validate([
             'category_id' => 'required',
-            'activity_name' => 'required',
+            // 'activity_name' => 'required',
             'activity_type' => 'required',
-            'activity_date' => 'required',
+            'activity_date' => 'nullable',
             'amount' => 'required',
             'wallet_id' => 'required'
         ]);
+
+        $validateActivity['activity_type'] = $validateActivity['activity_type'] == 0 ? 'expense' : 'income';
 
         $activity = Activity::find($id);
 
@@ -117,6 +121,10 @@ class ActivityController extends Controller
             $wallet->balance += $validateActivity['amount'];
         }
         $wallet->save();
+
+        if(!$request->activity_date){
+            $validateActivity['activity_date'] = date('Y-m-d');
+        }
 
         $activity->update($validateActivity);
 
