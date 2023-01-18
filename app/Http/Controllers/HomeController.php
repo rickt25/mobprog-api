@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -61,6 +62,16 @@ class HomeController extends Controller
                                     ];
                                 })
                                 ->first();
+
+                                // if no activity yet, only send the date and total
+
+                                if(!$activities){
+                                    $activities = [
+                                        'date' => Carbon::now()->format('d M Y'),
+                                        'total' => 0,
+                                        'activities' => []
+                                    ];
+                                }
 
         return response()->json([
             'status' => 'success',
