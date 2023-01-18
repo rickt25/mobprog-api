@@ -25,7 +25,7 @@ class ActivityController extends Controller
                                 ->map(function($activityGroup) {
                                     return [
                                         'date' => $activityGroup->first()->activity_date->format('d M Y'),
-                                        'total' => $activityGroup->sum('amount'),
+                                        'total' => $activityGroup->where('activity_type', 'income')->sum('amount') - $activityGroup->where('activity_type', 'expense')->sum('amount'),
                                         'activities' => $activityGroup,
                                     ];
                                 })

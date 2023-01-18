@@ -11,6 +11,8 @@ class Activity extends Model
 
     protected $guarded = [];
 
+    protected $hidden = ['created_at', 'updated_at'];
+
     protected $dates = ['activity_date'];
 
     public function getCategoryNameAttribute(){
