@@ -66,7 +66,7 @@ class ActivityController extends Controller
         $wallet->save();
 
         if(!$request->activity_date){
-            $validateActivity['activity_date'] = date('Y-m-d');
+            $validateActivity['activity_date'] = date('Y-m-d H:i:s');
         }
 
         $activity = Activity::create([

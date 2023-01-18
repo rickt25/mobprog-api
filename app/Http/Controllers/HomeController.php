@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,17 +39,32 @@ class HomeController extends Controller
     }
 
     public function todayActivity(){
-        $activities = Auth::user()->activities;
-        $todayActivities = [];
-        foreach($activities as $activity){
-            if($activity->activity_date == date('Y-m-d')){
-                array_push($todayActivities, $activity);
-            }
-        }
+        $user = Auth::user();
+
+        $activities = Activity::query()
+                                ->where(
+                                    [
+                                        ['user_id', $user->id],
+                                        ['activity_date', date('Y-m-d')]
+                                    ],
+                                )
+                                ->orderBy('activity_date', 'DESC')
+                                ->get()
+                                ->groupBy(function($activity){
+                                    return $activity->activity_date->format('Y-m-d');
+                                })
+                                ->map(function($activityGroup) {
+                                    return [
+                                        'date' => $activityGroup->first()->activity_date->format('d M Y'),
+                                        'total' => $activityGroup->where('activity_type', 'income')->sum('amount') - $activityGroup->where('activity_type', 'expense')->sum('amount'),
+                                        'activities' => $activityGroup,
+                                    ];
+                                })
+                                ->first();
 
         return response()->json([
             'status' => 'success',
-            'data' => $todayActivities
+            'data' => $activities
         ]);
     }
 }
