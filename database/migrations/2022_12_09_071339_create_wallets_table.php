@@ -18,6 +18,7 @@ class CreateWalletsTable extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->string('wallet_name');
             $table->bigInteger('balance');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
