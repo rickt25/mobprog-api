@@ -20,7 +20,7 @@ class Activity extends Model
     }
 
     public function wallet(){
-        return $this->belongsTo(Wallet::class);
+        return $this->belongsTo(Wallet::class)->withTrashed();
     }
 
     public function getWalletNameAttribute(){
