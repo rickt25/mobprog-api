@@ -46,7 +46,7 @@ class HomeController extends Controller
                                 ->where(
                                     [
                                         ['user_id', $user->id],
-                                        ['activity_date', date('Y-m-d')]
+                                        ['activity_date', '>=', Carbon::today()]
                                     ],
                                 )
                                 ->orderBy('activity_date', 'DESC')
