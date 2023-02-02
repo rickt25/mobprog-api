@@ -44,7 +44,8 @@ class User extends Authenticatable
 
     public function wallets()
     {
-        return $this->hasMany(Wallet::class);
+        // sort by name
+        return $this->hasMany(Wallet::class)->orderBy('wallet_name', 'ASC');
     }
 
     public function activities()
